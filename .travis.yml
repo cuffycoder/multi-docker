@@ -1,0 +1,26 @@
+sudo: required
+services:
+    - docker
+
+# here we are only testing the react client but we could add other tests
+before_install:
+    - docker build -t cuffycoder/react-test -f ./client/Dockerfile.dev 
+
+# run the tests
+script:
+    - docker run -e CI=true cuffycoder/react-test npm test
+
+after_success:
+    - docker build -t cuffycoder/multi-client ./client
+    - docker build -t cuffycoder/multi-nginx ./nginx
+    - docker build -t cuffycoder/multi-server ./server
+    - docker build -t cuffycoder/multi-worker ./worker 
+
+# Log in to docker hub
+    - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
+    - docker push cuffycoder/multi-client
+    - docker push cuffycoder/multi-nginx
+    - docker push cuffycoder/multi-server
+    - docker push cuffycoder/multi-worker
+
+# take the images and push to docker hub
