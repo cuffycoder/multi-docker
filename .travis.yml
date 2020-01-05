@@ -4,7 +4,7 @@ services:
 
 # here we are only testing the react client but we could add other tests
 before_install:
-    - docker build -t cuffycoder/react-test -f ./client/Dockerfile.dev 
+    - docker build -t cuffycoder/react-test -f ./client/Dockerfile.dev ./client
 
 # run the tests
 script:
