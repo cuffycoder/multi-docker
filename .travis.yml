@@ -18,9 +18,22 @@ after_success:
 
 # Log in to docker hub
     - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
+ # take the images and push to docker hub   
     - docker push cuffycoder/multi-client
     - docker push cuffycoder/multi-nginx
     - docker push cuffycoder/multi-server
     - docker push cuffycoder/multi-worker
 
-# take the images and push to docker hub
+
+    deploy:
+        provider: elasticbeanstalk
+        region: "us-west-2"
+        app: "multi-docker"
+        env: MultiDocker-env
+        bucket_name: elasticbeanstalk-us-west-2-266669267640
+        bucket_path: "docker-multi"
+        on:
+            branch: master
+        access_key_id: $AWS_ACCESS_KEY
+        secret_access_key: "$AWS_SECRET_KEY"
+
